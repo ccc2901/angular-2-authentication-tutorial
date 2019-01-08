@@ -29,6 +29,7 @@ If you have found a bug or if you have a feature request, please report them at 
 ## Author
 
 [Auth0](auth0.com)
+Modified by [Christiaan](https://github.com/ccc2901)
 
 ## License
 

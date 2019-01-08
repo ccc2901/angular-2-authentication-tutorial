@@ -6,21 +6,22 @@ const jwt = require('express-jwt');
 const jwks = require('jwks-rsa');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const jwtDecode = require('jwt-decode');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-const authCheck = jwt({
-    secret: jwks.expressJwtSecret({
-        cache: true,
-        rateLimit: true,
-        jwksRequestsPerMinute: 5,
-        jwksUri: "https://kmaida.auth0.com/.well-known/jwks.json" // @TODO: remove domain name
-    }),
-    audience: 'http://localhost:3001',
-    issuer: "https://kmaida.auth0.com/", // @TODO: remove domain name
-    algorithms: ['RS256']
+var authCheck = jwt({
+  secret: jwks.expressJwtSecret({
+      cache: true,
+      rateLimit: true,
+      jwksRequestsPerMinute: 5,
+      jwksUri: "https://example.eu.auth0.com/.well-known/jwks.json" //YOUR AUTH0 Domain followed by /.well-known/jwks.json e.g. https://example.eu.auth0.com/.well-known/jwks.json
+  }),
+  audience: 'http://localhost:3001',
+  issuer: "https://example.eu.auth0.com/", //YOUR AUTH0 Domain e.g. https://example.eu.auth0.com/
+  algorithms: ['RS256']
 });
 
 app.get('/api/deals/public', (req, res)=>{
@@ -116,6 +117,13 @@ app.get('/api/deals/private', authCheck, (req,res)=>{
     salePrice: 279.99
   },
   ];
+  const token = req.headers.authorization.slice(7);
+  console.log('----------ACCESS TOKEN----------');
+  console.log(token);
+
+  console.log('----------ACCESS TOKEN(Decoded)----------');
+  const token_decoded = jwtDecode(token);
+  console.log(token_decoded);
   res.json(deals);
 })
 
